@@ -3,7 +3,7 @@ package querystring
 import (
 	"testing"
 
-	"github.com/go-test/deep"
+	"github.com/stretchr/testify/assert"
 )
 
 func TestParser(t *testing.T) {
@@ -27,10 +27,41 @@ func TestParser(t *testing.T) {
 		},
 	})
 
-	if diff := deep.Equal(cond, expected); diff != nil {
-		t.Errorf("returned condition unexpected: diff= %s", diff)
+	assert.Equal(t, expected, cond)
+}
+
+func TestParserMixedCondition(t *testing.T) {
+	cond, err := Parse("a: 1 OR (b: 2 and c: 4)")
+	if err != nil {
+		t.Errorf("parse return error, %s", err)
 		return
 	}
+
+	assert.Equal(t, &OrCondition{
+		Left: &NumberRangeCondition{
+			Field:        "a",
+			Start:        pointer("1"),
+			End:          pointer("1"),
+			IncludeStart: true,
+			IncludeEnd:   true,
+		},
+		Right: &AndCondition{
+			Left: &NumberRangeCondition{
+				Field:        "b",
+				Start:        pointer("2"),
+				End:          pointer("2"),
+				IncludeStart: true,
+				IncludeEnd:   true,
+			},
+			Right: &NumberRangeCondition{
+				Field:        "c",
+				Start:        pointer("4"),
+				End:          pointer("4"),
+				IncludeStart: true,
+				IncludeEnd:   true,
+			},
+		},
+	}, cond)
 }
 
 func pointer(s string) *string {

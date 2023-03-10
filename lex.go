@@ -256,22 +256,22 @@ func inStrState(l *queryStringLex, next rune, eof bool) (lexState, bool) {
 		}
 
 		switch l.buf {
-		case "AND":
+		case "and", "AND":
 			l.nextTokenType = tAND
 			l.nextToken = &yySymType{}
 			l.reset()
 			return startState, consumed
-		case "OR":
+		case "or", "OR":
 			l.nextTokenType = tOR
 			l.nextToken = &yySymType{}
 			l.reset()
 			return startState, consumed
-		case "NOT":
+		case "not", "NOT":
 			l.nextTokenType = tNOT
 			l.nextToken = &yySymType{}
 			l.reset()
 			return startState, consumed
-		case "TO":
+		case "to", "TO":
 			l.nextTokenType = tTO
 			l.nextToken = &yySymType{}
 			l.reset()
